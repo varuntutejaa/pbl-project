@@ -1,0 +1,1497 @@
+/*
+  ============================================================
+  FILE: style.css
+  PURPOSE: All the visual styling for the website.
+  CSS (Cascading Style Sheets) controls colors, fonts, layout,
+  spacing, animations — everything visual.
+
+  HOW CSS WORKS:
+  .className { property: value; }  <- targets elements with class="className"
+  #idName { property: value; }     <- targets the element with id="idName"
+  element { property: value; }     <- targets all <element> tags
+
+  ============================================================
+*/
+
+
+/* ============================================================
+  CSS CUSTOM PROPERTIES (Variables)
+  Think of these like constants in programming.
+  Define a color once here, use it everywhere.
+  If you want to change the brand color, change ONE line here.
+============================================================ */
+:root {
+  /* Brand colors */
+  --teal: #00C9A7;
+  --teal-dark: #00a688;
+  --teal-light: #e0faf5;
+  --navy: #0a1628;
+  --navy-mid: #0f2140;
+  --navy-light: #162d4f;
+  --slate: #1e3a5f;
+
+  /* Text colors */
+  --text-primary: #e8f4f1;
+  --text-secondary: #8eb8a8;
+  --text-muted: #4a7a6a;
+
+  /* Risk colors */
+  --risk-low: #00C9A7;
+  --risk-medium: #FFB347;
+  --risk-high: #FF6B6B;
+  --risk-critical: #c0392b;
+
+  /* Spacing */
+  --section-pad: 5rem 2rem;
+  --card-radius: 16px;
+  --input-radius: 10px;
+
+  /* Shadows */
+  --shadow-soft: 0 4px 24px rgba(0, 201, 167, 0.08);
+  --shadow-card: 0 8px 40px rgba(0, 0, 0, 0.3);
+
+  /* Transitions */
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* ============================================================
+  RESET & BASE STYLES
+  Browsers have their own default styles. We reset them so our
+  site looks the same in Chrome, Firefox, Safari, etc.
+============================================================ */
+
+/* Box-sizing: makes width/height include padding & border (more predictable) */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Root element styles */
+html {
+  /* Smooth scrolling when clicking anchor links (#section) */
+  scroll-behavior: smooth;
+  font-size: 16px; /* Base font size. 1rem = 16px */
+}
+
+body {
+  /* Our chosen font family (loaded from Google Fonts) */
+  font-family: 'DM Sans', sans-serif;
+  background-color: var(--navy);
+  color: var(--text-primary);
+  /* Prevent horizontal scrollbar caused by animations */
+  overflow-x: hidden;
+  line-height: 1.65;
+}
+
+/* Make images and other media never overflow their container */
+img,
+svg,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+/* Remove bullet points from lists by default */
+ul, ol {
+  list-style: none;
+}
+
+/* Links: remove underline, inherit color from parent */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Headings font */
+h1, h2, h3, h4 {
+  font-family: 'DM Serif Display', serif;
+  line-height: 1.2;
+}
+
+
+/* ============================================================
+  UTILITY CLASSES
+  Reusable helpers used across multiple sections.
+============================================================ */
+
+/* Constrains content to a readable max width and centers it */
+.section-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--section-pad);
+}
+
+/* Centered section header used in multiple sections */
+.section-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.section-tag {
+  display: inline-block;
+  background: rgba(0, 201, 167, 0.12);
+  color: var(--teal);
+  border: 1px solid rgba(0, 201, 167, 0.3);
+  padding: 0.3rem 1rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  /* clamp(min, preferred, max) = responsive font size */
+  color: var(--text-primary);
+  margin-bottom: 0.8rem;
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+
+/* ============================================================
+  BUTTON STYLES
+  .btn = base styles, .btn-primary / .btn-ghost = variants.
+============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  border-radius: 100px; /* pill shape */
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 2px solid transparent;
+  text-decoration: none;
+}
+
+/* Primary button: solid teal */
+.btn-primary {
+  background: var(--teal);
+  color: var(--navy);
+}
+
+.btn-primary:hover {
+  background: var(--teal-dark);
+  transform: translateY(-2px); /* slight lift effect */
+  box-shadow: 0 8px 24px rgba(0, 201, 167, 0.3);
+}
+
+/* Ghost button: transparent with border */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-ghost:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+/* Large button variant */
+.btn-large {
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+}
+
+/* Disabled state */
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Loading spinner inside button */
+.btn-spinner {
+  display: none; /* hidden by default */
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(10, 22, 40, 0.3);
+  border-top-color: var(--navy);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.btn-spinner.visible {
+  display: inline-block;
+}
+
+/* Spin animation for the loader */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* ============================================================
+  NAVBAR
+  Fixed at top of page. Changes appearance on scroll.
+============================================================ */
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* sits above everything else */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2.5rem;
+  /* Start transparent, JS adds .scrolled class */
+  background: transparent;
+  transition: var(--transition);
+}
+
+/* When user scrolls down, JS adds this class → darker background */
+.navbar.scrolled {
+  background: rgba(10, 22, 40, 0.95);
+  backdrop-filter: blur(12px); /* frosted glass effect */
+  border-bottom: 1px solid rgba(0, 201, 167, 0.1);
+  padding: 0.9rem 2.5rem;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.nav-logo-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.nav-brand-text {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+  color: var(--text-primary);
+}
+
+/* Nav links — shown as horizontal list on desktop */
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.nav-links a {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+  position: relative;
+}
+
+/* Underline animation on hover */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--teal);
+  transition: width 0.3s;
+}
+
+.nav-links a:hover {
+  color: var(--teal);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Hamburger button — hidden on desktop, shown on mobile */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text-primary);
+  transition: var(--transition);
+}
+
+
+/* ============================================================
+  HERO SECTION
+============================================================ */
+
+.hero {
+  min-height: 100vh; /* fill the full screen height */
+  display: grid;
+  /* 2 columns on desktop, 1 on mobile (handled in media query) */
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 8rem 5vw 4rem;
+  gap: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative background shapes */
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none; /* can't click on them */
+  z-index: 0;
+}
+
+.blob-1 {
+  width: 500px;
+  height: 500px;
+  background: rgba(0, 201, 167, 0.06);
+  top: -100px;
+  right: -100px;
+}
+
+.blob-2 {
+  width: 350px;
+  height: 350px;
+  background: rgba(0, 60, 120, 0.2);
+  bottom: 50px;
+  left: -80px;
+}
+
+.blob-3 {
+  width: 250px;
+  height: 250px;
+  background: rgba(0, 201, 167, 0.04);
+  top: 40%;
+  left: 40%;
+}
+
+/* Hero content (left column) */
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(0, 201, 167, 0.1);
+  color: var(--teal);
+  border: 1px solid rgba(0, 201, 167, 0.25);
+  padding: 0.4rem 1.1rem;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  animation: fadeSlideUp 0.6s ease both;
+}
+
+.hero-title {
+  font-size: clamp(3rem, 6vw, 5rem);
+  color: var(--text-primary);
+  margin-bottom: 1.2rem;
+  animation: fadeSlideUp 0.7s 0.1s ease both;
+}
+
+/* The italic "Decoded." part */
+.hero-title em {
+  color: var(--teal);
+  font-style: italic;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  max-width: 500px;
+  margin-bottom: 2.2rem;
+  animation: fadeSlideUp 0.7s 0.2s ease both;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  animation: fadeSlideUp 0.7s 0.3s ease both;
+}
+
+/* Stats row below CTA buttons */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  animation: fadeSlideUp 0.7s 0.4s ease both;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.8rem;
+  color: var(--teal);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Page load animation */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* HERO VISUAL - the animated scan card on the right */
+.hero-visual {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  animation: fadeSlideUp 0.8s 0.5s ease both;
+}
+
+.scan-card {
+  background: var(--navy-mid);
+  border: 1px solid rgba(0, 201, 167, 0.15);
+  border-radius: 20px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+}
+
+.scan-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1.8rem;
+}
+
+.scan-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.scan-label {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--teal);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.scan-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.scan-line-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.scan-line-group span {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* The animated bars in the hero card */
+.scan-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* The colored fill — width comes from inline style --w variable */
+.scan-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: var(--w);
+  background: var(--color);
+  border-radius: 100px;
+  animation: barGrow 1.5s ease both;
+}
+
+@keyframes barGrow {
+  from { width: 0; }
+  to { width: var(--w); }
+}
+
+/* Animated sweep line across the card */
+.scan-sweep {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 201, 167, 0.04), transparent);
+  animation: sweep 3s ease-in-out infinite;
+}
+
+@keyframes sweep {
+  0% { left: -60%; }
+  100% { left: 160%; }
+}
+
+
+/* ============================================================
+  HOW IT WORKS SECTION
+============================================================ */
+
+.how-it-works {
+  background: var(--navy-mid);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.step-card {
+  background: var(--navy);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--card-radius);
+  padding: 2rem;
+  position: relative;
+  transition: var(--transition);
+}
+
+.step-card:hover {
+  border-color: rgba(0, 201, 167, 0.25);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Step number shown as large ghost text in top-right */
+.step-card::before {
+  content: attr(data-step);
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  font-family: 'DM Serif Display', serif;
+  font-size: 3rem;
+  color: rgba(0, 201, 167, 0.06);
+  line-height: 1;
+}
+
+.step-icon-wrap {
+  width: 52px;
+  height: 52px;
+  background: rgba(0, 201, 167, 0.1);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  color: var(--teal);
+}
+
+.step-icon-wrap svg {
+  width: 28px;
+  height: 28px;
+}
+
+.step-card h3 {
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+}
+
+.step-card p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+
+/* ============================================================
+  ASSESSMENT SECTION (Form)
+============================================================ */
+
+.assessment {
+  background: var(--navy);
+}
+
+/* ---- PROGRESS STEPS ---- */
+.progress-container {
+  max-width: 700px;
+  margin: 0 auto 3rem;
+}
+
+.progress-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+}
+
+.step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--navy-light);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.step-name {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: color 0.3s;
+}
+
+/* Active step — highlighted in teal */
+.progress-step.active .step-num {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--navy);
+}
+
+.progress-step.active .step-name {
+  color: var(--teal);
+}
+
+/* Completed step — check mark */
+.progress-step.completed .step-num {
+  background: rgba(0, 201, 167, 0.2);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+
+.progress-step.completed .step-num::before {
+  content: '✓';
+}
+
+.progress-connector {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-bottom: 1.5rem; /* to align with step-num circles, not labels */
+}
+
+/* Progress bar track */
+.progress-bar {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 100px;
+  width: 0%; /* JS updates this */
+  transition: width 0.5s ease;
+}
+
+
+/* ---- FORM WRAPPER ---- */
+.assessment-form {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+/* Each step is hidden by default */
+.form-step {
+  display: none;
+  animation: fadeSlideUp 0.4s ease;
+}
+
+/* Only the active step is shown */
+.form-step.active {
+  display: block;
+}
+
+.step-title {
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.step-desc {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+/* 2-column grid for form fields */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* Some fields span both columns */
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.required {
+  color: var(--risk-high);
+}
+
+/* Input, select, textarea base styles */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--navy-light);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--input-radius);
+  padding: 0.8rem 1rem;
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+/* Focus state (when user clicks the field) */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.12);
+}
+
+/* Placeholder text color */
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* select dropdown options inherit dark bg */
+.form-group select option {
+  background: var(--navy-mid);
+}
+
+/* Error message (shown under field when validation fails) */
+.form-error {
+  font-size: 0.8rem;
+  color: var(--risk-high);
+  min-height: 1rem;
+}
+
+/* Hint text under a field */
+.form-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+/* Textarea resize handle */
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Red border when field has error */
+.form-group.has-error input,
+.form-group.has-error select {
+  border-color: var(--risk-high);
+}
+
+
+/* ---- CHECKBOX GRID ---- */
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+  margin-top: 0.3rem;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: var(--transition);
+}
+
+.checkbox-item:hover {
+  border-color: rgba(0, 201, 167, 0.3);
+  background: rgba(0, 201, 167, 0.04);
+}
+
+/* Hide native checkbox */
+.checkbox-item input[type="checkbox"] {
+  display: none;
+}
+
+/* Custom styled checkbox box */
+.checkbox-custom {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+/* When the checkbox is checked, style the custom box */
+.checkbox-item input:checked + .checkbox-custom {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+/* Add checkmark using CSS */
+.checkbox-item input:checked + .checkbox-custom::after {
+  content: '✓';
+  color: var(--navy);
+  font-size: 11px;
+  font-weight: bold;
+}
+
+/* When checked, change the whole item style */
+.checkbox-item:has(input:checked) {
+  border-color: rgba(0, 201, 167, 0.4);
+  background: rgba(0, 201, 167, 0.07);
+  color: var(--teal);
+}
+
+
+/* ---- FILE UPLOAD ZONE ---- */
+.upload-zone {
+  border: 2px dashed rgba(0, 201, 167, 0.25);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  background: rgba(0, 201, 167, 0.02);
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+  border-color: var(--teal);
+  background: rgba(0, 201, 167, 0.06);
+}
+
+.upload-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  color: var(--teal);
+}
+
+.upload-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+}
+
+.upload-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.upload-browse {
+  background: none;
+  border: none;
+  color: var(--teal);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.upload-types {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* File preview list */
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--navy-light);
+  border: 1px solid rgba(0, 201, 167, 0.15);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  font-size: 0.85rem;
+}
+
+.file-item-icon {
+  color: var(--teal);
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.file-item-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.file-item-size {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.file-item-remove {
+  background: none;
+  border: none;
+  color: var(--risk-high);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.file-item-remove:hover {
+  opacity: 1;
+}
+
+
+/* ---- REVIEW CARD (Step 4) ---- */
+.review-card {
+  background: var(--navy-light);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.review-section {
+  margin-bottom: 1.8rem;
+}
+
+.review-section:last-child {
+  margin-bottom: 0;
+}
+
+.review-section h4 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 201, 167, 0.15);
+}
+
+.review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+}
+
+.review-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.review-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.review-value {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.review-none {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+/* Disclaimer box */
+.disclaimer-box {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: rgba(255, 107, 107, 0.06);
+  border: 1px solid rgba(255, 107, 107, 0.2);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 2rem;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.disclaimer-box svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: #FFB347;
+}
+
+/* Form navigation buttons */
+.form-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+/* ============================================================
+  RESULTS SECTION
+============================================================ */
+
+.results-section {
+  max-width: 860px;
+  margin: 3rem auto 0;
+  padding-bottom: 3rem;
+  animation: fadeSlideUp 0.6s ease;
+}
+
+.results-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.results-badge {
+  display: inline-block;
+  background: rgba(0, 201, 167, 0.12);
+  color: var(--teal);
+  border: 1px solid rgba(0, 201, 167, 0.3);
+  padding: 0.4rem 1.2rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.results-header h2 {
+  font-size: 2.2rem;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.results-header p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Chart container */
+.chart-container {
+  background: var(--navy-mid);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  height: 320px;
+}
+
+/* Risk cards grid */
+.risk-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.risk-card {
+  background: var(--navy-mid);
+  border-radius: 12px;
+  padding: 1.2rem;
+  border-top: 3px solid var(--risk-color, var(--teal));
+  position: relative;
+}
+
+.risk-card-disease {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.risk-card-percent {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  color: var(--risk-color, var(--teal));
+}
+
+.risk-card-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+/* Recommendations */
+.recommendations-box {
+  background: var(--navy-mid);
+  border: 1px solid rgba(0, 201, 167, 0.15);
+  border-radius: 16px;
+  padding: 1.8rem;
+  margin-bottom: 2rem;
+}
+
+.recommendations-box h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.recommendations-box ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.recommendations-box li {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.recommendations-box li::before {
+  content: '→';
+  color: var(--teal);
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+.results-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.results-disclaimer {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+
+/* ============================================================
+  ABOUT SECTION
+============================================================ */
+
+.about {
+  background: var(--navy-mid);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+  gap: 4rem;
+}
+
+.about-text .section-title {
+  text-align: left;
+  margin-bottom: 1.2rem;
+}
+
+.about-text p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.tech-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.tech-badge {
+  background: rgba(0, 201, 167, 0.08);
+  border: 1px solid rgba(0, 201, 167, 0.2);
+  color: var(--teal);
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+/* Animated pulse graphic */
+.pulse-container {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pulse-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 201, 167, 0.2);
+  animation: pulseRing 3s ease-out infinite;
+}
+
+.ring-1 { width: 100%; height: 100%; animation-delay: 0s; }
+.ring-2 { width: 70%;  height: 70%;  animation-delay: 0.5s; }
+.ring-3 { width: 45%;  height: 45%;  animation-delay: 1s; }
+
+@keyframes pulseRing {
+  0% { transform: scale(0.95); opacity: 0.5; }
+  50% { transform: scale(1.02); opacity: 0.2; }
+  100% { transform: scale(0.95); opacity: 0.5; }
+}
+
+.pulse-core {
+  width: 120px;
+  height: 60px;
+  z-index: 1;
+}
+
+
+/* ============================================================
+  FOOTER
+============================================================ */
+
+.footer {
+  background: var(--navy);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2rem;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-brand p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.footer-copy {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+
+/* ============================================================
+  RESPONSIVE DESIGN — MEDIA QUERIES
+  These rules only apply at certain screen sizes.
+  Think of it as: "if screen width < X, do this instead."
+============================================================ */
+
+/* Tablet: screens narrower than 900px */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding-top: 7rem;
+  }
+
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .hero-stats {
+    justify-content: center;
+  }
+
+  .hero-visual {
+    display: none; /* hide the card on smaller screens */
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .about-text .section-title {
+    text-align: center;
+  }
+
+  .tech-badges {
+    justify-content: center;
+  }
+
+  .risk-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-group.full-width {
+    grid-column: 1;
+  }
+
+  .checkbox-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile: screens narrower than 600px */
+@media (max-width: 600px) {
+  .nav-links {
+    display: none; /* hamburger menu used instead */
+  }
+
+  .nav-hamburger {
+    display: flex;
+  }
+
+  /* When hamburger is open (JS adds .open class) */
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--navy);
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    font-size: 1.2rem;
+    z-index: 999;
+  }
+
+  .section-container {
+    padding: 3rem 1.2rem;
+  }
+
+  .risk-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkbox-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-steps {
+    gap: 0;
+  }
+
+  .step-name {
+    display: none; /* hide step names on very small screens */
+  }
+}

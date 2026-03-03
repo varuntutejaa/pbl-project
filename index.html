@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>MediScan AI — Intelligent Health Risk Assessment</title>
+
+  <!-- 
+    Load Google Fonts — we're using:
+    - "DM Serif Display" for headings (elegant medical feel)
+    - "DM Sans" for body text (clean and readable)
+    These are loaded from the internet, so you need WiFi.
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap"
+    rel="stylesheet" />
+
+  <!-- Link to our external CSS file (this is what styles the page) -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!--
+    Link to Chart.js — a free library that lets us draw charts/graphs.
+    We use it to show risk percentage bars on the results page.
+    CDN = Content Delivery Network (loads from the internet, not our server).
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!--
+    jsPDF — a library that lets us generate PDF files directly in the browser.
+    The user can click "Download PDF" and get the report saved to their device.
+  -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+
+  <nav class="navbar" id="navbar">
+    <!-- Logo / Brand name -->
+    <div class="nav-brand">
+      <!-- SVG is a scalable vector graphic — it's a small heart icon -->
+      <svg class="nav-logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="20" cy="20" r="20" fill="#00C9A7" />
+        <path d="M20 30 C20 30 10 22 10 15 C10 11 13 8 16.5 8 C18.5 8 20 10 20 10 C20 10 21.5 8 23.5 8 C27 8 30 11 30 15 C30 22 20 30 20 30Z"
+          fill="white" />
+        <rect x="17" y="13" width="6" height="2" rx="1" fill="#00C9A7" />
+        <rect x="19" y="11" width="2" height="6" rx="1" fill="#00C9A7" />
+      </svg>
+      <span class="nav-brand-text">MediScan AI</span>
+    </div>
+
+    <!-- Navigation links (anchor tags = clickable links) -->
+    <ul class="nav-links">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#assessment">Start Assessment</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+
+    <!-- Hamburger menu button (shown only on mobile, controlled by CSS) -->
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+
+  <!-- ============================================================
+    HERO SECTION
+    The big "welcome" banner at the top of the page.
+    This is the first thing users see when they visit.
+  ============================================================ -->
+  <section class="hero" id="hero">
+    <!-- Decorative background blobs (pure CSS, no images) -->
+    <div class="hero-blob blob-1"></div>
+    <div class="hero-blob blob-2"></div>
+    <div class="hero-blob blob-3"></div>
+
+    <div class="hero-content">
+      <span class="hero-badge">AI-Powered Disease Risk Prediction</span>
+
+      <!-- Main heading -->
+      <h1 class="hero-title">
+        Your Health,<br />
+        <em>Decoded.</em>
+      </h1>
+
+      <!-- Subheading / description -->
+      <p class="hero-subtitle">
+        Upload your medical scans, enter your health data, and receive a
+        comprehensive disease risk assessment report — downloadable as a PDF.
+        Built for early detection. Designed for clarity.
+      </p>
+
+      <!-- Call-to-action buttons -->
+      <div class="hero-actions">
+        <!-- smooth scroll to the form section when clicked -->
+        <a href="#assessment" class="btn btn-primary">Begin Assessment</a>
+        <a href="#how-it-works" class="btn btn-ghost">See How It Works</a>
+      </div>
+
+      <!-- Trust badges (small stats to build credibility) -->
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-number">12+</span>
+          <span class="stat-label">Diseases Screened</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">High</span>
+          <span class="stat-label">Accuracy Rate</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number">3 min</span>
+          <span class="stat-label">Average Time</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right side decorative medical card visual -->
+    <div class="hero-visual">
+      <div class="scan-card">
+        <div class="scan-card-header">
+          <span class="scan-dot"></span>
+          <span class="scan-dot"></span>
+          <span class="scan-dot"></span>
+          <span class="scan-label">Live Analysis</span>
+        </div>
+        <!-- Fake scan lines (animated) -->
+        <div class="scan-lines">
+          <div class="scan-line-group">
+            <div class="scan-bar" style="--w: 85%; --color: #00C9A7;"></div>
+            <span>Cardiac Risk</span>
+          </div>
+          <div class="scan-line-group">
+            <div class="scan-bar" style="--w: 42%; --color: #FFB347;"></div>
+            <span>Diabetes Risk</span>
+          </div>
+          <div class="scan-line-group">
+            <div class="scan-bar" style="--w: 28%; --color: #FF6B6B;"></div>
+            <span>Hypertension</span>
+          </div>
+          <div class="scan-line-group">
+            <div class="scan-bar" style="--w: 67%; --color: #4ECDC4;"></div>
+            <span>Liver Function</span>
+          </div>
+          <div class="scan-line-group">
+            <div class="scan-bar" style="--w: 19%; --color: #A8E6CF;"></div>
+            <span>Kidney Risk</span>
+          </div>
+        </div>
+        <!-- Animated scanning line -->
+        <div class="scan-sweep"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+    HOW IT WORKS SECTION
+    Explains the 3-step process to users.
+  ============================================================ -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Process</span>
+        <h2 class="section-title">How MediScan Works</h2>
+        <p class="section-subtitle">Three simple steps to your personalized health risk report.</p>
+      </div>
+
+      <!-- 3 step cards in a row -->
+      <div class="steps-grid">
+
+        <!-- Step 1 -->
+        <div class="step-card" data-step="01">
+          <div class="step-icon-wrap">
+            <!-- SVG person icon -->
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="16" r="8" stroke="currentColor" stroke-width="2.5" />
+              <path d="M8 40c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" />
+            </svg>
+          </div>
+          <h3>Enter Patient Info</h3>
+          <p>Provide your age, gender, lifestyle habits, and existing medical conditions. All structured data is
+            processed securely.</p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card" data-step="02">
+          <div class="step-icon-wrap">
+            <!-- SVG scan/upload icon -->
+            <svg viewBox="0 0 48 48" fill="none">
+              <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" stroke-width="2.5" />
+              <path d="M6 20h36" stroke="currentColor" stroke-width="2.5" />
+              <path d="M16 30h8M16 34h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <path d="M32 26l-4 4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </div>
+          <h3>Upload Medical Scans</h3>
+          <p>Upload X-rays, MRI images, lab reports, or doctor notes. Our system processes both structured and
+            unstructured data.</p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card" data-step="03">
+          <div class="step-icon-wrap">
+            <!-- SVG PDF/report icon -->
+            <svg viewBox="0 0 48 48" fill="none">
+              <path d="M12 6h16l12 12v24H12V6z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" />
+              <path d="M28 6v12h12" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" />
+              <path d="M18 26h12M18 32h8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </div>
+          <h3>Download PDF Report</h3>
+          <p>Receive a detailed risk assessment report with disease probability percentages, all downloadable as a
+            professional PDF.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+    ASSESSMENT SECTION (MULTI-STEP FORM)
+    This is the heart of the website — a 4-step form where users
+    enter their health data and upload files.
+  ============================================================ -->
+  <section class="assessment" id="assessment">
+    <div class="section-container">
+      <div class="section-header">
+        <span class="section-tag">Assessment</span>
+        <h2 class="section-title">Start Your Health Assessment</h2>
+        <p class="section-subtitle">All data is processed locally and securely. We do not store personal information.
+        </p>
+      </div>
+
+      <!-- 
+        PROGRESS BAR
+        Shows which step the user is on (1 of 4, 2 of 4, etc.)
+        The width is controlled by JavaScript.
+      -->
+      <div class="progress-container">
+        <div class="progress-steps">
+          <!-- Each circle is one step. JS adds "active" or "completed" class -->
+          <div class="progress-step active" data-step="1">
+            <span class="step-num">1</span>
+            <span class="step-name">Personal Info</span>
+          </div>
+          <div class="progress-connector"></div>
+          <div class="progress-step" data-step="2">
+            <span class="step-num">2</span>
+            <span class="step-name">Medical History</span>
+          </div>
+          <div class="progress-connector"></div>
+          <div class="progress-step" data-step="3">
+            <span class="step-num">3</span>
+            <span class="step-name">Upload Scans</span>
+          </div>
+          <div class="progress-connector"></div>
+          <div class="progress-step" data-step="4">
+            <span class="step-num">4</span>
+            <span class="step-name">Review</span>
+          </div>
+        </div>
+        <!-- The animated progress bar line below the steps -->
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <!-- 
+        FORM WRAPPER
+        All 4 steps live inside this form. Only one step is shown at a time.
+        JavaScript shows/hides them using CSS classes.
+      -->
+      <form class="assessment-form" id="assessmentForm" novalidate>
+
+        <!-- ======================================
+          STEP 1: Personal Information
+          Collects basic patient details.
+        ====================================== -->
+        <div class="form-step active" id="step1">
+          <h3 class="step-title">Personal Information</h3>
+          <p class="step-desc">Tell us a bit about yourself. This helps calibrate the risk models.</p>
+
+          <!-- Grid layout: 2 columns on desktop, 1 on mobile -->
+          <div class="form-grid">
+
+            <!-- Full Name -->
+            <div class="form-group full-width">
+              <label for="fullName">Full Name</label>
+              <input type="text" id="fullName" name="fullName" placeholder="e.g. Ahmed Al-Rashid"
+                autocomplete="name" />
+              <!-- Error message shown if validation fails -->
+              <span class="form-error" id="fullNameError"></span>
+            </div>
+
+            <!-- Age -->
+            <div class="form-group">
+              <label for="age">Age <span class="required">*</span></label>
+              <input type="number" id="age" name="age" placeholder="e.g. 35" min="1" max="120" required />
+              <span class="form-error" id="ageError"></span>
+            </div>
+
+            <!-- Gender -->
+            <div class="form-group">
+              <label for="gender">Biological Sex <span class="required">*</span></label>
+              <select id="gender" name="gender" required>
+                <option value="">— Select —</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other / Prefer not to say</option>
+              </select>
+              <span class="form-error" id="genderError"></span>
+            </div>
+
+            <!-- Height -->
+            <div class="form-group">
+              <label for="height">Height (cm)</label>
+              <input type="number" id="height" name="height" placeholder="e.g. 172" min="50" max="250" />
+            </div>
+
+            <!-- Weight -->
+            <div class="form-group">
+              <label for="weight">Weight (kg)</label>
+              <input type="number" id="weight" name="weight" placeholder="e.g. 75" min="10" max="400" />
+            </div>
+
+            <!-- Ethnicity (relevant for some disease risks) -->
+            <div class="form-group full-width">
+              <label for="ethnicity">Ethnicity (optional)</label>
+              <select id="ethnicity" name="ethnicity">
+                <option value="">— Select —</option>
+                <option value="arab">Arab</option>
+                <option value="south_asian">South Asian</option>
+                <option value="east_asian">East Asian</option>
+                <option value="african">African / African-American</option>
+                <option value="caucasian">Caucasian / White</option>
+                <option value="hispanic">Hispanic / Latino</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+          </div><!-- end form-grid -->
+
+          <!-- Navigation buttons at bottom of each step -->
+          <div class="form-nav">
+            <!-- No "Previous" on step 1 -->
+            <button type="button" class="btn btn-primary" onclick="nextStep(1)">Continue →</button>
+          </div>
+        </div><!-- end step1 -->
+
+
+        <!-- ======================================
+          STEP 2: Medical History & Lifestyle
+          Collects health background info.
+        ====================================== -->
+        <div class="form-step" id="step2">
+          <h3 class="step-title">Medical History & Lifestyle</h3>
+          <p class="step-desc">This structured data feeds directly into the risk models.</p>
+
+          <div class="form-grid">
+
+            <!-- Smoking status -->
+            <div class="form-group">
+              <label for="smoking">Smoking Status <span class="required">*</span></label>
+              <select id="smoking" name="smoking" required>
+                <option value="">— Select —</option>
+                <option value="never">Never Smoked</option>
+                <option value="former">Former Smoker</option>
+                <option value="current_light">Current — Light (&lt;10/day)</option>
+                <option value="current_heavy">Current — Heavy (≥10/day)</option>
+              </select>
+              <span class="form-error" id="smokingError"></span>
+            </div>
+
+            <!-- Alcohol intake -->
+            <div class="form-group">
+              <label for="alcohol">Alcohol Consumption</label>
+              <select id="alcohol" name="alcohol">
+                <option value="">— Select —</option>
+                <option value="none">None</option>
+                <option value="occasional">Occasional (1-2/week)</option>
+                <option value="moderate">Moderate (3-5/week)</option>
+                <option value="heavy">Heavy (daily)</option>
+              </select>
+            </div>
+
+            <!-- Exercise frequency -->
+            <div class="form-group">
+              <label for="exercise">Physical Activity</label>
+              <select id="exercise" name="exercise">
+                <option value="">— Select —</option>
+                <option value="sedentary">Sedentary (little/none)</option>
+                <option value="light">Light (1-3 days/week)</option>
+                <option value="moderate">Moderate (3-5 days/week)</option>
+                <option value="active">Active (6-7 days/week)</option>
+              </select>
+            </div>
+
+            <!-- Blood pressure -->
+            <div class="form-group">
+              <label for="bloodPressure">Blood Pressure (Systolic)</label>
+              <input type="number" id="bloodPressure" name="bloodPressure" placeholder="e.g. 120 mmHg" min="60"
+                max="250" />
+              <span class="form-hint">Normal: 90–120 mmHg</span>
+            </div>
+
+            <!-- Blood sugar -->
+            <div class="form-group">
+              <label for="bloodSugar">Fasting Blood Sugar (mg/dL)</label>
+              <input type="number" id="bloodSugar" name="bloodSugar" placeholder="e.g. 95" min="40" max="600" />
+              <span class="form-hint">Normal: 70–100 mg/dL</span>
+            </div>
+
+            <!-- Cholesterol -->
+            <div class="form-group">
+              <label for="cholesterol">Total Cholesterol (mg/dL)</label>
+              <input type="number" id="cholesterol" name="cholesterol" placeholder="e.g. 180" min="50" max="500" />
+              <span class="form-hint">Normal: &lt;200 mg/dL</span>
+            </div>
+
+            <!-- Family history checkboxes -->
+            <div class="form-group full-width">
+              <label>Family History of Diseases (check all that apply)</label>
+              <div class="checkbox-grid">
+                <label class="checkbox-item">
+                  <input type="checkbox" name="familyHistory" value="diabetes" />
+                  <span class="checkbox-custom"></span>
+                  Diabetes
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="familyHistory" value="heart_disease" />
+                  <span class="checkbox-custom"></span>
+                  Heart Disease
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="familyHistory" value="cancer" />
+                  <span class="checkbox-custom"></span>
+                  Cancer
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="familyHistory" value="hypertension" />
+                  <span class="checkbox-custom"></span>
+                  Hypertension
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="familyHistory" value="stroke" />
+                  <span class="checkbox-custom"></span>
+                  Stroke
+                </label>
+                <label class="checkbox-item">
+                  <input type="checkbox" name="familyHistory" value="kidney_disease" />
+                  <span class="checkbox-custom"></span>
+                  Kidney Disease
+                </label>
+              </div>
+            </div>
+
+            <!-- Current symptoms text area (unstructured data) -->
+            <div class="form-group full-width">
+              <label for="symptoms">Current Symptoms / Notes</label>
+              <textarea id="symptoms" name="symptoms" rows="4"
+                placeholder="Describe any symptoms you are experiencing, recent test results, doctor notes, etc. This unstructured text will be analyzed by our NLP system."></textarea>
+              <span class="form-hint">This is unstructured data — write in plain language.</span>
+            </div>
+
+          </div><!-- end form-grid -->
+
+          <div class="form-nav">
+            <button type="button" class="btn btn-ghost" onclick="prevStep(2)">← Back</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep(2)">Continue →</button>
+          </div>
+        </div><!-- end step2 -->
+
+
+        <!-- ======================================
+          STEP 3: Upload Medical Files
+          Users upload scans, reports, images.
+        ====================================== -->
+        <div class="form-step" id="step3">
+          <h3 class="step-title">Upload Medical Scans & Reports</h3>
+          <p class="step-desc">Upload X-rays, MRI images, CT scans, lab reports, or any medical document. Supported
+            formats: JPG, PNG, PDF, DICOM.</p>
+
+          <!-- 
+            DRAG AND DROP UPLOAD ZONE
+            Users can drag files here OR click to browse.
+            The actual file input is hidden and triggered by JS.
+          -->
+          <div class="upload-zone" id="uploadZone">
+            <!-- Hidden file input — triggered when user clicks the zone -->
+            <input type="file" id="fileInput" name="files" multiple
+              accept=".jpg,.jpeg,.png,.pdf,.dcm,image/*,application/pdf" style="display:none;" />
+
+            <!-- Upload icon -->
+            <div class="upload-icon">
+              <svg viewBox="0 0 64 64" fill="none">
+                <rect x="8" y="16" width="48" height="36" rx="6" stroke="currentColor" stroke-width="2.5" />
+                <path d="M32 40V26M26 32l6-6 6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <path d="M22 52h20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+              </svg>
+            </div>
+
+            <p class="upload-title">Drag & drop files here</p>
+            <p class="upload-subtitle">or <button type="button" class="upload-browse"
+                onclick="document.getElementById('fileInput').click()">browse files</button></p>
+            <p class="upload-types">Supports: JPG, PNG, PDF, DICOM (.dcm) · Max 10MB per file</p>
+          </div>
+
+          <!-- 
+            FILE PREVIEW LIST
+            When files are selected, their names appear here.
+            JS dynamically adds/removes these items.
+          -->
+          <div class="file-list" id="fileList">
+            <!-- Files appear here dynamically via JavaScript -->
+          </div>
+
+          <!-- Optional: Select scan type for each upload -->
+          <div class="form-group" style="margin-top: 2rem;">
+            <label for="scanType">Primary Scan Type (if uploading images)</label>
+            <select id="scanType" name="scanType">
+              <option value="">— Select scan type —</option>
+              <option value="chest_xray">Chest X-Ray</option>
+              <option value="mri_brain">Brain MRI</option>
+              <option value="ct_abdomen">CT Abdomen</option>
+              <option value="ecg">ECG / EKG Strip</option>
+              <option value="blood_report">Blood Test Report</option>
+              <option value="urine_report">Urine Analysis Report</option>
+              <option value="other">Other / General</option>
+            </select>
+          </div>
+
+          <div class="form-nav">
+            <button type="button" class="btn btn-ghost" onclick="prevStep(3)">← Back</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep(3)">Continue →</button>
+          </div>
+        </div><!-- end step3 -->
+
+
+        <!-- ======================================
+          STEP 4: Review & Submit
+          Summary of what was entered before submitting.
+        ====================================== -->
+        <div class="form-step" id="step4">
+          <h3 class="step-title">Review & Submit</h3>
+          <p class="step-desc">Please review your information before we generate your risk report.</p>
+
+          <!-- 
+            REVIEW CARD
+            JS will fill in the actual values dynamically.
+            These are just placeholder containers.
+          -->
+          <div class="review-card">
+            <div class="review-section">
+              <h4>Personal Information</h4>
+              <!-- These spans get filled by JavaScript (see main.js) -->
+              <div class="review-grid" id="reviewPersonal">
+                <!-- JS populates this -->
+              </div>
+            </div>
+            <div class="review-section">
+              <h4>Medical History</h4>
+              <div class="review-grid" id="reviewMedical">
+                <!-- JS populates this -->
+              </div>
+            </div>
+            <div class="review-section">
+              <h4>Uploaded Files</h4>
+              <div id="reviewFiles">
+                <p class="review-none">No files uploaded.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Disclaimer -->
+          <div class="disclaimer-box">
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <p>
+              <strong>Medical Disclaimer:</strong> This tool is for educational and informational purposes only.
+              It is <em>not</em> a substitute for professional medical advice, diagnosis, or treatment. Always
+              consult a qualified healthcare provider.
+            </p>
+          </div>
+
+          <div class="form-nav">
+            <button type="button" class="btn btn-ghost" onclick="prevStep(4)">← Back</button>
+            <!--
+              This button triggers the form submission.
+              JS intercepts this with preventDefault() to handle the AJAX call.
+            -->
+            <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
+              Generate Report
+              <!-- Loading spinner (hidden until API call starts) -->
+              <span class="btn-spinner" id="btnSpinner"></span>
+            </button>
+          </div>
+        </div><!-- end step4 -->
+
+      </form><!-- end assessmentForm -->
+
+
+      <!-- ============================================================
+        RESULTS SECTION
+        Hidden by default. Shown AFTER form is submitted successfully.
+        Contains the risk chart and download button.
+      ============================================================ -->
+      <div class="results-section" id="resultsSection" style="display:none;">
+
+        <div class="results-header">
+          <div class="results-badge">✓ Analysis Complete</div>
+          <h2>Your Health Risk Assessment</h2>
+          <p id="resultsPatientName">Patient: —</p>
+        </div>
+
+        <!-- Chart container — Chart.js draws a bar chart here -->
+        <div class="chart-container">
+          <canvas id="riskChart"></canvas>
+        </div>
+
+        <!-- Risk cards grid — one card per disease -->
+        <div class="risk-cards-grid" id="riskCardsGrid">
+          <!-- Dynamically generated by JavaScript -->
+        </div>
+
+        <!-- Recommendations section -->
+        <div class="recommendations-box" id="recommendationsBox">
+          <h3>📋 Recommendations</h3>
+          <ul id="recommendationsList"></ul>
+        </div>
+
+        <!-- Download PDF button -->
+        <div class="results-actions">
+          <button class="btn btn-primary btn-large" id="downloadPdfBtn" onclick="downloadPDF()">
+            ⬇ Download PDF Report
+          </button>
+          <button class="btn btn-ghost btn-large" onclick="resetForm()">
+            Start New Assessment
+          </button>
+        </div>
+
+        <!-- Small print below results -->
+        <p class="results-disclaimer">
+          * Risk percentages are generated by a placeholder algorithm. When ML/LLM models are integrated, results will
+          be based on trained clinical data. Always consult a licensed physician.
+        </p>
+
+      </div><!-- end resultsSection -->
+
+    </div><!-- end section-container -->
+  </section>
+
+
+  <!-- ============================================================
+    ABOUT SECTION
+    Brief info about the project.
+  ============================================================ -->
+  <section class="about" id="about">
+    <div class="section-container">
+      <div class="about-grid">
+        <div class="about-text">
+          <span class="section-tag">About</span>
+          <h2 class="section-title">Built for Tomorrow's Healthcare</h2>
+          <p>MediScan is a Project-Based Learning (PBL) initiative that demonstrates how AI and machine learning can
+            transform early disease detection. The platform accepts both structured data (age, blood pressure,
+            cholesterol) and unstructured data (doctor notes, scanned reports) to compute multi-disease risk scores.</p>
+          <p>Currently using a rule-based engine as a placeholder. LLM + ML model integration hooks are ready and
+            waiting.</p>
+          <div class="tech-badges">
+            <span class="tech-badge">React / HTML</span>
+            <span class="tech-badge">Node.js</span>
+            <span class="tech-badge">Chart.js</span>
+            <span class="tech-badge">jsPDF</span>
+            <span class="tech-badge">LLM Ready</span>
+            <span class="tech-badge">ML Ready</span>
+          </div>
+        </div>
+        <div class="about-visual">
+          <!-- Animated pulse graphic -->
+          <div class="pulse-container">
+            <div class="pulse-ring ring-1"></div>
+            <div class="pulse-ring ring-2"></div>
+            <div class="pulse-ring ring-3"></div>
+            <div class="pulse-core">
+              <svg viewBox="0 0 60 40" fill="none">
+                <polyline points="0,20 10,20 15,5 20,35 25,10 30,30 35,15 40,20 60,20" stroke="#00C9A7"
+                  stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+    FOOTER
+    Bottom of the page.
+  ============================================================ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="nav-brand-text">MediScan</span>
+        <p>Intelligent Health Risk Assessment</p>
+      </div>
+      <p class="footer-copy">
+        © 2025 MediScan PBL Project. For educational purposes only. Not a medical device.
+      </p>
+    </div>
+  </footer>
+
+
+  <!--
+    Load our JavaScript file LAST (at bottom of body).
+    This is important — we need the HTML to load first so JS can find elements.
+    If we put it in <head>, JS would run before HTML exists and fail.
+  -->
+  <script src="main.js"></script>
+
+</body>
+</html>
